@@ -13,7 +13,6 @@ services:
     networks: [demo]
     environment:
       ETCD_NAME: etcd1
-      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://10.1.3.19:2380
       ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
       ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
       ETCD_INITIAL_CLUSTER_TOKEN: tutorial
