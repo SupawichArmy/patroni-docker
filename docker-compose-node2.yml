@@ -13,8 +13,9 @@ services:
     ports:
       - "2379:2379"
       - "2380:2380"
-    networks: [demo]
-    ip: "192.102.0.102"
+    networks:
+      demo:
+        ipv4_address: 192.102.0.102
     environment:
       ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
       ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
