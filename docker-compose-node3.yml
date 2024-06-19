@@ -2,6 +2,7 @@ version: "2"
 
 networks:
   demo:
+    driver: bridge
     ipam:
       config:
         - subnet: 192.103.0.0/16
