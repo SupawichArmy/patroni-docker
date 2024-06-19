@@ -4,7 +4,7 @@ networks:
   demo:
     ipam:
       config:
-        - subnet: 172.103.0.0/16
+        - subnet: 192.103.0.0/16
 
 services:
   etcd3:
