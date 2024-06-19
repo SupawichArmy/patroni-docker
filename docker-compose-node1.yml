@@ -25,7 +25,7 @@ services:
 
   haproxy:
     image: ${PATRONI_TEST_IMAGE:-patroni}
-    networks: demo
+    networks: [demo]
     env_file: docker/patroni.env
     hostname: haproxy
     container_name: demo-haproxy
@@ -44,7 +44,7 @@ services:
     restart: unless-stopped
     ports:
       - "8008:8008"
-    networks: demo
+    networks: [demo]
     env_file: docker/patroni.env
     hostname: patroni1
     container_name: demo-patroni1
