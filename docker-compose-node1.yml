@@ -40,7 +40,6 @@ services:
 
   patroni1:
     image: ${PATRONI_TEST_IMAGE:-patroni}
-    restart: unless-stopped
     ports:
       - "8008:8008"
     networks: [demo]
@@ -48,9 +47,7 @@ services:
     hostname: patroni1
     container_name: demo-patroni1
     environment:
-      PATRONI_NAME: patroni1
       ETCDCTL_ENDPOINTS: http://10.1.3.19:2379,http://10.1.3.22:2379,http://10.1.3.24:2379
       PATRONI_ETCD3_HOSTS: "'10.1.3.19:2379','10.1.3.22:2379','10.1.3.24:2379'"
-      PATRONI_CONSUL_HOST: http://consul-ip:8500
-      PATRONI_CONSUL_URL: http://consul-ip:8500/v1/
       PATRONI_SCOPE: demo
+      PATRONI_NAME: patroni1
