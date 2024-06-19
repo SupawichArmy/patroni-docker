@@ -40,7 +40,7 @@ services:
 
   patroni1:
     image: ${PATRONI_TEST_IMAGE:-patroni}
-     
+    restart: unless-stopped
     ports:
       - "8008:8008"
     networks: [demo]
