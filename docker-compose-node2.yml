@@ -20,7 +20,7 @@ services:
       ETCD_UNSUPPORTED_ARCH: arm64
     container_name: demo-etcd2
     hostname: etcd2
-    command: etcd --name etcd2 --initial-advertise-peer-urls http://10.1.3.22:2380 --advertise-client-urls http://10.1.3.22:2379 --listen-client-urls http://10.1.3.22:2379
+    command: etcd --name etcd2 --initial-advertise-peer-urls http://10.1.3.22:2380 --advertise-client-urls http://10.1.3.22:2379
 
   patroni2:
     image: ${PATRONI_TEST_IMAGE:-patroni}
