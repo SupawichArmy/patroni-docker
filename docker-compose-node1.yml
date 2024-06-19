@@ -12,7 +12,6 @@ services:
       - "2380:2380"
     networks: [demo]
     environment:
-      ETCD_NAME: etcd1
       ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
       ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
       ETCD_INITIAL_CLUSTER_TOKEN: tutorial
