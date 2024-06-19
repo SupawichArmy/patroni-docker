@@ -2,7 +2,8 @@ version: "2"
 
 networks:
   demo:
-
+    config:
+      - subnet: 172.102.0.0/16
 services:
   etcd2:
     image: ${PATRONI_TEST_IMAGE:-patroni}

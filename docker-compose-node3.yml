@@ -2,6 +2,8 @@ version: "2"
 
 networks:
   demo:
+    config:
+      - subnet: 172.103.0.0/16
 
 services:
   etcd3:
