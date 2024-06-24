@@ -1,59 +1,40 @@
-version: "2"
-
-networks:
-  demo:
-    ipam:
-      config:
-        - subnet: 192.101.0.0/16
-
 services:
-  etcd1:
-    image: ${PATRONI_TEST_IMAGE:-patroni}
-    restart: unless-stopped
-    ports:
-      - "2379:2379"
-      - "2380:2380"
-    networks:
-      demo:
-        ipv4_address: 192.101.0.101
+  etcd1: &etcd
+    image: ${PATRONI_IMAGE:-patroni}
+    network_mode: host
+    extra_hosts:
+      - "etcd1:${IP_HOST1}"
+      - "etcd2:${IP_HOST2}"
+      - "etcd3:${IP_HOST3}"
+      - "patroni1:${IP_HOST1}"
+      - "patroni2:${IP_HOST2}"
+      - "patroni3:${IP_HOST3}"
     environment:
-      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
-      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
-      ETCD_INITIAL_CLUSTER: etcd1=http://192.101.0.101:2380,etcd2=http://192.102.0.102:2380,etcd3=http://192.103.0.103:2380
-      ETCD_INITIAL_CLUSTER_STATE: new
-      ETCD_INITIAL_CLUSTER_TOKEN: tutorial
-      ETCD_UNSUPPORTED_ARCH: arm64
+      ETCD_LISTEN_PEER_URLS: ${ETCD_LISTEN_PEER_URLS}
+      ETCD_LISTEN_CLIENT_URLS: ${ETCD_LISTEN_CLIENT_URLS}
+      ETCD_INITIAL_CLUSTER: ${ETCD_INITIAL_CLUSTER}
+      ETCD_INITIAL_CLUSTER_STATE: ${ETCD_INITIAL_CLUSTER_STATE}
+      ETCD_INITIAL_CLUSTER_TOKEN: ${ETCD_INITIAL_CLUSTER_TOKEN}
+      ETCD_UNSUPPORTED_ARCH: ${ETCD_UNSUPPORTED_ARCH}
     container_name: demo-etcd1
     hostname: etcd1
-    command: etcd --name etcd1 --initial-advertise-peer-urls http://192.101.0.101:2380
-
-  haproxy:
-    image: ${PATRONI_TEST_IMAGE:-patroni}
-    networks: [demo]
-    env_file: docker/patroni.env
-    hostname: haproxy
-    container_name: demo-haproxy
-    ports:
-      - "5000:5000"
-      - "5001:5001"
-      - "7000:7000"
-    command: haproxy
-    environment:
-      ETCDCTL_ENDPOINTS: http://192.101.0.101:2379,http://192.102.0.102:2379,http://192.103.0.103:2379
-      PATRONI_ETCD3_HOSTS: "'192.101.0.101:2379','192.102.0.102:2379','192.103.0.103:2379'"
-      PATRONI_SCOPE: demo
+    command: etcd --name etcd1 --initial-advertise-peer-urls http://etcd1:2380
 
   patroni1:
     image: ${PATRONI_TEST_IMAGE:-patroni}
-    restart: unless-stopped
-    ports:
-      - "8008:8008"
-    networks: [demo]
+    network_mode: host
+    extra_hosts:
+      - "etcd1:${IP_HOST1}"
+      - "etcd2:${IP_HOST2}"
+      - "etcd3:${IP_HOST3}"
+      - "patroni1:${IP_HOST1}"
+      - "patroni2:${IP_HOST2}"
+      - "patroni3:${IP_HOST3}"
     env_file: docker/patroni.env
     hostname: patroni1
     container_name: demo-patroni1
     environment:
-      ETCDCTL_ENDPOINTS: http://192.101.0.101:2379,http://192.102.0.102:2379,http://192.103.0.103:2379
-      PATRONI_ETCD3_HOSTS: "'192.101.0.101:2379','192.102.0.102:2379','192.103.0.103:2379'"
-      PATRONI_SCOPE: demo
-      PATRONI_NAME: patroni1
+      ETCDCTL_ENDPOINTS: ${ETCDCTL_ENDPOINTS}
+      PATRONI_ETCD3_HOSTS: ${PATRONI_ETCD3_HOSTS}
+      PATRONI_SCOPE: ${PATRONI_SCOPE}
+      PATRONI_NAME: ${PATRONI_NAME1}
