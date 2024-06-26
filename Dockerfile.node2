@@ -43,7 +43,7 @@ RUN set -ex \
     \
     # Prepare postgres/patroni/haproxy environment
     && mkdir -p "$PGHOME/.config/patroni" /patroni /run/haproxy \
-    && ln -s ../../postgres0.yml "$PGHOME/.config/patroni/patronictl.yaml" \
+    && ln -s ../../postgres1.yml "$PGHOME/.config/patroni/patronictl.yaml" \
     && ln -s /patronictl.py /usr/local/bin/patronictl \
     && sed -i "s|/var/lib/postgresql.*|$PGHOME:/bin/bash|" /etc/passwd \
     && chown -R postgres:postgres /var/log \
