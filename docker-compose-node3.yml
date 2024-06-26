@@ -15,7 +15,7 @@ services:
       ETCD_INITIAL_CLUSTER: ${ETCD_INITIAL_CLUSTER}
       ETCD_INITIAL_CLUSTER_STATE: ${ETCD_INITIAL_CLUSTER_STATE}
       ETCD_INITIAL_CLUSTER_TOKEN: ${ETCD_INITIAL_CLUSTER_TOKEN}
-      ETCD_UNSUPPORTED_ARCH: ${ETCD_UNSUPPORTED_ARCH}
+      # ETCD_UNSUPPORTED_ARCH: ${ETCD_UNSUPPORTED_ARCH}
     container_name: demo-etcd3
     hostname: etcd3
     command: etcd --name etcd3 --initial-advertise-peer-urls http://etcd3:2380
