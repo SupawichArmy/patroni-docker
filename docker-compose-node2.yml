@@ -3,12 +3,12 @@ services:
     image: ${PATRONI_IMAGE:-patroni}
     network_mode: host
     extra_hosts:
-      - "etcd1:${IP_HOST1}"
-      - "etcd2:${IP_HOST2}"
-      - "etcd3:${IP_HOST3}"
-      - "patroni1:${IP_HOST1}"
-      - "patroni2:${IP_HOST2}"
-      - "patroni3:${IP_HOST3}"
+      - "etcd1:10.1.3.19"
+      - "etcd2:10.1.3.22"
+      - "etcd3:10.1.3.24"
+      - "patroni1:10.1.3.19"
+      - "patroni2:10.1.3.22"
+      - "patroni3:10.1.3.24"
     environment:
       ETCD_LISTEN_PEER_URLS: ${ETCD_LISTEN_PEER_URLS}
       ETCD_LISTEN_CLIENT_URLS: ${ETCD_LISTEN_CLIENT_URLS}
@@ -24,13 +24,14 @@ services:
     image: ${PATRONI_TEST_IMAGE:-patroni}
     network_mode: host
     extra_hosts:
-      - "etcd1:${IP_HOST1}"
-      - "etcd2:${IP_HOST2}"
-      - "etcd3:${IP_HOST3}"
-      - "patroni1:${IP_HOST1}"
-      - "patroni2:${IP_HOST2}"
-      - "patroni3:${IP_HOST3}"
-    env_file: docker/patroni.env
+      - "etcd1:10.1.3.19"
+      - "etcd2:10.1.3.22"
+      - "etcd3:10.1.3.24"
+      - "patroni1:10.1.3.19"
+      - "patroni2:10.1.3.22"
+      - "patroni3:10.1.3.24"
+    env_file:
+      - docker/patroni.env
     hostname: patroni2
     container_name: demo-patroni2
     environment:
