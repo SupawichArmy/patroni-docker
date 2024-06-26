@@ -1,6 +1,6 @@
 services:
   etcd3:
-    image: ${PATRONI_IMAGE:-patroni}
+    image: ${PATRONI_TEST_IMAGE:-patroni}
     network_mode: host
     extra_hosts:
       - "etcd1:10.1.3.19"
@@ -10,13 +10,12 @@ services:
       - "patroni2:10.1.3.22"
       - "patroni3:10.1.3.24"
     environment:
-      ETCD_LISTEN_PEER_URLS: ${ETCD_LISTEN_PEER_URLS}
-      ETCD_LISTEN_CLIENT_URLS: ${ETCD_LISTEN_CLIENT_URLS}
-      ETCD_INITIAL_CLUSTER: ${ETCD_INITIAL_CLUSTER}
-      ETCD_INITIAL_CLUSTER_STATE: ${ETCD_INITIAL_CLUSTER_STATE}
-      ETCD_INITIAL_CLUSTER_TOKEN: ${ETCD_INITIAL_CLUSTER_TOKEN}
-      ETCD_UNSUPPORTED_ARCH: ${ETCD_UNSUPPORTED_ARCH}
-    env_file: ./secret.env
+      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_INITIAL_CLUSTER: etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
+      ETCD_INITIAL_CLUSTER_STATE: new
+      ETCD_INITIAL_CLUSTER_TOKEN: tutorial
+      ETCD_UNSUPPORTED_ARCH: arm64
     container_name: demo-etcd3
     hostname: etcd3
     command: etcd --name etcd3 --initial-advertise-peer-urls http://etcd3:2380
@@ -31,13 +30,11 @@ services:
       - "patroni1:10.1.3.19"
       - "patroni2:10.1.3.22"
       - "patroni3:10.1.3.24"
-    env_file:
-      - docker/patroni.env
-      - ./secret.env
+    env_file: docker/patroni.env
     hostname: patroni3
     container_name: demo-patroni3
     environment:
-      ETCDCTL_ENDPOINTS: ${ETCDCTL_ENDPOINTS}
-      PATRONI_ETCD3_HOSTS: ${PATRONI_ETCD3_HOSTS}
-      PATRONI_SCOPE: ${PATRONI_SCOPE}
-      PATRONI_NAME: ${PATRONI_NAME3}
+      ETCDCTL_ENDPOINTS: http://etcd1:2379,http://etcd2:2379,http://etcd3:2379
+      PATRONI_ETCD3_HOSTS: "'etcd1:2379','etcd2:2379','etcd3:2379'"
+      PATRONI_SCOPE: demo
+      PATRONI_NAME: patroni3
