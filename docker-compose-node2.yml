@@ -15,7 +15,8 @@ services:
       ETCD_INITIAL_CLUSTER: ${ETCD_INITIAL_CLUSTER}
       ETCD_INITIAL_CLUSTER_STATE: ${ETCD_INITIAL_CLUSTER_STATE}
       ETCD_INITIAL_CLUSTER_TOKEN: ${ETCD_INITIAL_CLUSTER_TOKEN}
-      # ETCD_UNSUPPORTED_ARCH: ${ETCD_UNSUPPORTED_ARCH}
+      ETCD_UNSUPPORTED_ARCH: ${ETCD_UNSUPPORTED_ARCH}
+    env_file: ./secret.env
     container_name: demo-etcd2
     hostname: etcd2
     command: etcd --name etcd2 --initial-advertise-peer-urls http://etcd2:2380
@@ -32,6 +33,7 @@ services:
       - "patroni3:10.1.3.24"
     env_file:
       - docker/patroni.env
+      - ./secret.env
     hostname: patroni2
     container_name: demo-patroni2
     environment:
