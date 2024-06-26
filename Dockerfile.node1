@@ -103,6 +103,7 @@ RUN set -ex \
     && find /usr/lib/python3/dist-packages -name '*test*' | xargs rm -fr \
     && find /lib/$(uname -m)-linux-gnu/security -type f ! -name pam_env.so ! -name pam_permit.so ! -name pam_unix.so -delete
 
+
 # perform compression if it is necessary
 ARG COMPRESS
 RUN if [ "$COMPRESS" = "true" ]; then \
