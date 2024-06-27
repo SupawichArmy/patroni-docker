@@ -1,4 +1,4 @@
-scope: postgres
+scope: demo
 namespace: /pg_cluster/
 name: pg_node2
 
