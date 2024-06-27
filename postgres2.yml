@@ -1,6 +1,6 @@
-scope: demo
-namespace: /pg_cluster/
-name: pg_node3
+scope: batman
+#namespace: /service/
+name: postgresql3
 
 restapi:
   listen: 127.0.0.1:8010

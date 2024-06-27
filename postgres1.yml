@@ -1,7 +1,6 @@
-scope: demo
-namespace: /pg_cluster/
-name: pg_node2
-
+scope: batman
+#namespace: /service/
+name: postgresql1
 restapi:
   listen: 127.0.0.1:8009
   connect_address: 127.0.0.1:8009
