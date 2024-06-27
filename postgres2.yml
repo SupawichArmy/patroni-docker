@@ -1,16 +1,16 @@
-scope: batman
-#namespace: /service/
-name: postgresql2
+scope: postgres
+namespace: /pg_cluster/
+name: pg_node3
 
 restapi:
   listen: 127.0.0.1:8010
   connect_address: 127.0.0.1:8010
-#  cafile: /etc/ssl/certs/ssl-cacert-snakeoil.pem
-#  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
-#  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
-  authentication:
-    username: username
-    password: password
+  #  cafile: /etc/ssl/certs/ssl-cacert-snakeoil.pem
+  #  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
+  #  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
+  # authentication:
+  #   username: username
+  #   password: password
 
 #ctl:
 #  insecure: false # Allow connections to Patroni REST API without verifying certificates
@@ -57,45 +57,44 @@ bootstrap:
     maximum_lag_on_failover: 1048576
     postgresql:
       use_pg_rewind: true
-      pg_hba:
-      # For kerberos gss based connectivity (discard @.*$)
-      #- host replication replicator 127.0.0.1/32 gss include_realm=0
-      #- host all all 0.0.0.0/0 gss include_realm=0
-      - host replication replicator 127.0.0.1/32 md5
-      - host all all 0.0.0.0/0 md5
-      #  - hostssl all all 0.0.0.0/0 md5
-#      use_slots: true
+      use_slots: true
       parameters:
-#        wal_level: hot_standby
-#        hot_standby: "on"
-#        max_connections: 100
-#        max_worker_processes: 8
-#        wal_keep_segments: 8
-#        max_wal_senders: 10
-#        max_replication_slots: 10
-#        max_prepared_transactions: 0
-#        max_locks_per_transaction: 64
-#        wal_log_hints: "on"
-#        track_commit_timestamp: "off"
-#        archive_mode: "on"
-#        archive_timeout: 1800s
-#        archive_command: mkdir -p ../wal_archive && test ! -f ../wal_archive/%f && cp %p ../wal_archive/%f
-#      recovery_conf:
-#        restore_command: cp ../wal_archive/%f %p
+          wal_level: hot_standby
+          hot_standby: "on"
+          max_connections: 100
+          max_worker_processes: 8
+          wal_keep_segments: 8
+          max_wal_senders: 10
+          max_replication_slots: 10
+          max_prepared_transactions: 0
+          max_locks_per_transaction: 64
+          wal_log_hints: "on"
+          track_commit_timestamp: "off"
+          archive_mode: "on"
+          archive_timeout: 1800s
+          archive_command: mkdir -p ../wal_archive && test ! -f ../wal_archive/%f && cp %p ../wal_archive/%f
+      recovery_conf:
+          restore_command: cp ../wal_archive/%f %p
+  initdb:
+    - encoding: UTF8
+    - data-checksums
 
-  # some desired options for 'initdb'
-  initdb:  # Note: It needs to be a list (some options need values, others are switches)
-  - encoding: UTF8
-  - data-checksums
+  pg_hba:
+    - host replication replicator 127.0.0.1/32 md5
+    - host all all 0.0.0.0/0 md5
+  users:
+    admin:
+      password: admin
+      options:
+        - createrole
+        - createdb
 
 postgresql:
   listen: 127.0.0.1:5434
   connect_address: 127.0.0.1:5434
-#  proxy_address: 127.0.0.1:5435  # The address of connection pool (e.g., pgbouncer) running next to Patroni/Postgres. Only for service discovery.
-  data_dir: data/postgresql2
-#  bin_dir:
-#  config_dir:
-  pgpass: /tmp/pgpass2
+  data_dir: /var/lib/pgsql/14/data
+  bin_dir: /usr/pgsql-14/bin
+  pgpass: /tmp/pgpass0
   authentication:
     replication:
       username: replicator
@@ -103,18 +102,19 @@ postgresql:
     superuser:
       username: postgres
       password: patroni
-    rewind:  # Has no effect on postgres 10 and lower
+    rewind:
       username: rewind_user
       password: rewind_password
   # Server side kerberos spn
-#  krbsrvname: postgres
+  #  krbsrvname: postgres
   parameters:
     # Fully qualified kerberos ticket file for the running user
     # same as KRB5CCNAME used by the GSS
-#    krb_server_keyfile: /var/spool/keytabs/postgres
-    unix_socket_directories: '..'  # parent directory of data_dir
+    #    krb_server_keyfile: /var/spool/keytabs/postgres
+    unix_socket_directories: ".." # parent directory of data_dir
 tags:
-    # failover_priority: 1
-    noloadbalance: false
-    clonefrom: false
-#    replicatefrom: postgresql1
+  failover_priority: 20
+  noloadbalance: false
+  clonefrom: false
+  nosync: false
+  nostream: false
