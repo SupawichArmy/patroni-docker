@@ -43,7 +43,7 @@ RUN set -ex \
     \
     # Prepare postgres/patroni/haproxy environment
     && mkdir -p "$PGHOME/.config/patroni" /patroni /run/haproxy \
-    && ln -s ../../postgres0.yml "$PGHOME/.config/patroni/patronictl.yaml" \
+    && ln -s ../../postgres1.yml "$PGHOME/.config/patroni/patronictl.yaml" \
     && ln -s /patronictl.py /usr/local/bin/patronictl \
     && sed -i "s|/var/lib/postgresql.*|$PGHOME:/bin/bash|" /etc/passwd \
     && chown -R postgres:postgres /var/log \
@@ -150,7 +150,7 @@ ENV ETCDCTL_API=3
 COPY patroni /patroni/
 COPY extras/confd/conf.d/haproxy.toml /etc/confd/conf.d/
 COPY extras/confd/templates/haproxy.tmpl /etc/confd/templates/
-COPY patroni*.py docker/entrypoint.sh /
+COPY patroni*.py docker/entrypoint1.sh /
 COPY postgres?.yml $PGHOME/
 
 WORKDIR $PGHOME
@@ -172,4 +172,4 @@ RUN sed -i 's/env python/&3/' /patroni*.py \
 
 USER postgres
 
-ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/entrypoint1.sh"]
