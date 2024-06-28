@@ -8,9 +8,9 @@ restapi:
   #  cafile: /etc/ssl/certs/ssl-cacert-snakeoil.pem
   #  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
   #  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
-  # authentication:
-  #   username: username
-  #   password: password
+  authentication:
+    username: username
+    password: password
 
 #ctl:
 #  insecure: false # Allow connections to Patroni REST API without verifying certificates
@@ -66,22 +66,22 @@ bootstrap:
       #  - hostssl all all 0.0.0.0/0 md5
       #      use_slots: true
       parameters:
-        wal_level: hot_standby
-        hot_standby: "on"
-        max_connections: 100
-        max_worker_processes: 8
-        wal_keep_segments: 8
-        max_wal_senders: 10
-        max_replication_slots: 10
-        max_prepared_transactions: 0
-        max_locks_per_transaction: 64
-        wal_log_hints: "on"
-        track_commit_timestamp: "off"
-        archive_mode: "on"
-        archive_timeout: 1800s
-        archive_command: mkdir -p ../wal_archive && test ! -f ../wal_archive/%f && cp %p ../wal_archive/%f
-      recovery_conf:
-        restore_command: cp ../wal_archive/%f %p
+  #        wal_level: hot_standby
+  #        hot_standby: "on"
+  #        max_connections: 100
+  #        max_worker_processes: 8
+  #        wal_keep_segments: 8
+  #        max_wal_senders: 10
+  #        max_replication_slots: 10
+  #        max_prepared_transactions: 0
+  #        max_locks_per_transaction: 64
+  #        wal_log_hints: "on"
+  #        track_commit_timestamp: "off"
+  #        archive_mode: "on"
+  #        archive_timeout: 1800s
+  #        archive_command: mkdir -p ../wal_archive && test ! -f ../wal_archive/%f && cp %p ../wal_archive/%f
+  #      recovery_conf:
+  #        restore_command: cp ../wal_archive/%f %p
 
   # some desired options for 'initdb'
   initdb: # Note: It needs to be a list (some options need values, others are switches)
@@ -114,7 +114,7 @@ postgresql:
     #    krb_server_keyfile: /var/spool/keytabs/postgres
     unix_socket_directories: ".." # parent directory of data_dir
 tags:
-  failover_priority: 20
+  # failover_priority: 1
   noloadbalance: false
   clonefrom: false
 #    replicatefrom: postgresql1
