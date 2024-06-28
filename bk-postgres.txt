@@ -1,0 +1,234 @@
+-----------------------   postgresql0   -----------------------
+scope: batman
+# namespace: /pg_cluster/
+name: postgresql0
+
+restapi:
+  listen: 127.0.0.1:8008
+  connect_address: 127.0.0.1:8008
+
+etcd:
+  host: 127.0.0.1:2379
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_level: hot_standby
+        hot_standby: "on"
+        max_connections: 100
+        max_worker_processes: 8
+        wal_keep_segments: 8
+        max_wal_senders: 10
+        max_replication_slots: 10
+        max_prepared_transactions: 0
+        max_locks_per_transaction: 64
+        wal_log_hints: "on"
+        track_commit_timestamp: "off"
+        archive_mode: "on"
+        archive_timeout: 1800s
+        archive_command: mkdir -p ../wal_archive && test ! -f ../wal_archive/%f && cp %p ../wal_archive/%f
+      recovery_conf:
+        restore_command: cp ../wal_archive/%f %p
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+  pg_hba:
+    - host replication replicator 127.0.0.1/32 md5
+    - host all all 0.0.0.0/0 md5
+  users:
+    admin:
+      password: admin
+      options:
+        - createrole
+        - createdb
+
+postgresql:
+  listen: 127.0.0.1:5432
+  connect_address: 127.0.0.1:5432
+  data_dir: data/postgresql0
+  #  bin_dir:
+  #  config_dir:  
+  pgpass: /tmp/pgpass0
+  authentication:
+    replication:
+      username: replicator
+      password: rep-pass
+    superuser:
+      username: postgres
+      password: patroni
+    rewind:
+      username: rewind_user
+      password: rewind_password
+  parameters:
+    unix_socket_directories: ".."
+tags:
+  failover_priority: 60
+  noloadbalance: false
+  clonefrom: false
+  nosync: false
+  nostream: false
+
+
+
+-----------------------   postgresql1   -----------------------
+scope: batman
+namespace: /pg_cluster/
+name: postgresql1
+
+restapi:
+  listen: 127.0.0.1:8009
+  connect_address: 127.0.0.1:8009
+
+etcd:
+  host: 127.0.0.1:2379
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_level: hot_standby
+        hot_standby: "on"
+        max_connections: 100
+        max_worker_processes: 8
+        wal_keep_segments: 8
+        max_wal_senders: 10
+        max_replication_slots: 10
+        max_prepared_transactions: 0
+        max_locks_per_transaction: 64
+        wal_log_hints: "on"
+        track_commit_timestamp: "off"
+        archive_mode: "on"
+        archive_timeout: 1800s
+        archive_command: mkdir -p ../wal_archive && test ! -f ../wal_archive/%f && cp %p ../wal_archive/%f
+      recovery_conf:
+        restore_command: cp ../wal_archive/%f %p
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+  pg_hba:
+    - host replication replicator 127.0.0.1/32 md5
+    - host all all 0.0.0.0/0 md5
+  users:
+    admin:
+      password: admin
+      options:
+        - createrole
+        - createdb
+
+postgresql:
+  listen: 127.0.0.1:5433
+  connect_address: 127.0.0.1:5433
+  data_dir: data/postgresql1
+  #  bin_dir:
+  #  config_dir:
+  pgpass: /tmp/pgpass1
+  authentication:
+    replication:
+      username: replicator
+      password: rep-pass
+    superuser:
+      username: postgres
+      password: patroni
+    rewind:
+      username: rewind_user
+      password: rewind_password
+  parameters:
+    unix_socket_directories: ".."
+tags:
+  failover_priority: 10
+  noloadbalance: false
+  clonefrom: false
+  nosync: false
+  nostream: false
+
+
+-----------------------   postgresql2 -----------------------
+
+scope: batman
+namespace: /pg_cluster/
+name: postgresql2
+
+restapi:
+  listen: 127.0.0.1:8010
+  connect_address: 127.0.0.1:8010
+
+etcd:
+  host: 127.0.0.1:2379
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_level: hot_standby
+        hot_standby: "on"
+        max_connections: 100
+        max_worker_processes: 8
+        wal_keep_segments: 8
+        max_wal_senders: 10
+        max_replication_slots: 10
+        max_prepared_transactions: 0
+        max_locks_per_transaction: 64
+        wal_log_hints: "on"
+        track_commit_timestamp: "off"
+        archive_mode: "on"
+        archive_timeout: 1800s
+        archive_command: mkdir -p ../wal_archive && test ! -f ../wal_archive/%f && cp %p ../wal_archive/%f
+      recovery_conf:
+        restore_command: cp ../wal_archive/%f %p
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+  pg_hba:
+    - host replication replicator 127.0.0.1/32 md5
+    - host all all 0.0.0.0/0 md5
+  users:
+    admin:
+      password: admin
+      options:
+        - createrole
+        - createdb
+
+postgresql:
+  listen: 127.0.0.1:5434
+  connect_address: 127.0.0.1:5434
+  data_dir: data/postgresql2
+  #  bin_dir:
+  #  config_dir:
+  pgpass: /tmp/pgpass2
+  authentication:
+    replication:
+      username: replicator
+      password: rep-pass
+    superuser:
+      username: postgres
+      password: patroni
+    rewind:
+      username: rewind_user
+      password: rewind_password
+  parameters:
+    unix_socket_directories: ".."
+tags:
+  failover_priority: 20
+  noloadbalance: false
+  clonefrom: false
+  nosync: false
+  nostream: false
